@@ -40,8 +40,8 @@ class Command(BaseCommand):
         )
 
         PeriodicTask.objects.create(
-            interval=schedule,  # we created this above.
-            name='Importing contacts',  # simply describes this periodic task.
+            interval=schedule,
+            name='History cleaner',  # simply describes this periodic task.
             task='msgapp.tasks.clear_old_history',  # name of task.
             args=json.dumps([DELTA]),
         )
@@ -62,3 +62,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self._create_superuser()
         self._create_task()
+        print('Initialization finished.')

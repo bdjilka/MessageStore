@@ -29,7 +29,7 @@ router.register(r'history', views.HistoryViewSet)
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
-    url(r'^docs/', include_docs_urls('MSG')),
+    url(r'^docs/', include_docs_urls('Project API documentation')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),

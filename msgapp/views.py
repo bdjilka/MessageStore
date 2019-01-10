@@ -115,7 +115,7 @@ class MessageViewSet(viewsets.ModelViewSet):
             return Response(status=400)
 
 
-class HistoryViewSet(viewsets.ModelViewSet):
+class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint для просмотра истории всех сообщений[-ия]
     """
