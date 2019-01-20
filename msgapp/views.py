@@ -1,11 +1,11 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions
-# , filters
-from .models import Message, History
-from django.contrib.auth.models import User
+from .models import Message, History, StoreUser
 from .serializers import MessageSerializer, HistorySerializer, UserSerializer, MessagePostSerializer
 import logging
+import django_filters.rest_framework
+from .filters import MessageFilter
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -13,28 +13,28 @@ class UserViewSet(viewsets.ModelViewSet):
     API endpoint для просмотра списка пользователей
     """
 
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = StoreUser.objects.all()
     serializer_class = UserSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     """
-    API endpoint работы с сообщениями (добавление - просмотр - ведение истории - изменение - удаление)
+    API endpoint работы с сообщениями (добавление - просмотр - изменение - удаление)
     """
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, ]
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    # filter_backends = (filters.SearchFilters, )
-    # search_fields = ('text', 'publish_date', 'last_modify', 'author__username')
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_class = MessageFilter
 
     def create(self, request, *args, **kwargs):
         """
         Создание сообщения
         Требуется только текст, дата создания заполняются сами, дата последнего изменения приравнивается к текущей
         Автор сообщения берется из данных реквеста
-        Данная операция разрешена только автору сообщения или суперюзеру
+        Данная операция разрешена авторизованному пользователю
         :param request: post-запрос, содержит информацию об авторизированном пользователе и текст сообщенич
         :param args:
         :param kwargs:
@@ -56,6 +56,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         Обновление сообщения
         Требуется только текст, дата изменения заполняется автоматически
         Данная операция разрешена только автору сообщения или суперюзеру
+        Также происходит запись в таблицу истории сообщений
         :param request: put-запрос, содержит информацию о пользователе и текст сообщения
         :param pk: идентификатор сообщения
         :param args:
@@ -69,6 +70,11 @@ class MessageViewSet(viewsets.ModelViewSet):
             if message.author_id == user_id or is_admin:
                 message.text = request.data['text']
                 message.save()
+                History.objects.create(
+                    message=message,
+                    text=request.data['text'],
+                    user=request.user
+                )
                 logging.info("Message updated")
                 return Response(status=200)
             else:
@@ -120,6 +126,6 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
     API endpoint для просмотра истории всех сообщений[-ия]
     """
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, ]
     queryset = History.objects.all()
     serializer_class = HistorySerializer

@@ -1,14 +1,22 @@
 from rest_framework import serializers
-from .models import Message, History
-from django.contrib.auth.models import User
+from .models import Message, History, StoreUser
+from djoser.serializers import UserCreateSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
     """ Сериализация пользователя """
 
     class Meta:
-        model = User
+        model = StoreUser
         fields = ('id', 'username')
+
+
+class UserRegistrationSerializer(UserCreateSerializer):
+    """ Серилизация пользователя для авторизации """
+
+    class Meta(UserCreateSerializer.Meta):
+        model = StoreUser
+        fields = ('username', 'password')
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -30,7 +38,8 @@ class MessagePostSerializer(serializers.ModelSerializer):
 
 class HistorySerializer(serializers.ModelSerializer):
     """ Сериализация истории """
+    user = UserSerializer()
 
     class Meta:
         model = History
-        fields = ('message', 'text', 'date')
+        fields = ('message', 'text', 'date', 'user')

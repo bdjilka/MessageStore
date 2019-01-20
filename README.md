@@ -26,5 +26,29 @@ redis-server
 
 celery -A msgstore worker --concurrency=4 --beat --scheduler django --loglevel=info -n worker
 
+
+6) run front: message-store-vue
+
+> front-end for MessageStore project
+
+## Build Setup of frontend
+
+```
+# serve with hot reload at localhost:8080 from directory .../msgstore-vue
+npm run dev
+
+# if not running, try:
+sufo npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
 ## Documentation on API methods:
-- localhost:8000/docs
+ localhost:8000/docs
