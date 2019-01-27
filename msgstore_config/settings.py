@@ -85,7 +85,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-ROOT_URLCONF = 'msgstore.urls'
+ROOT_URLCONF = 'msgstore_config.urls'
 
 TEMPLATES = [
     {
@@ -103,7 +103,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'msgstore.wsgi.application'
+WSGI_APPLICATION = 'msgstore_config.wsgi.application'
 
 DATABASES = {
     'default': {

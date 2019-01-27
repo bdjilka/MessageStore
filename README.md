@@ -3,37 +3,35 @@
 
 **Install python requirements**
 
-pip install -r requirements.txt
+> pip install -r requirements.txt
 
 ## Build Setup
 1) Apply migrations
 
-python manage.py migrate
+> python manage.py migrate
 
 2) Create superuser with default login:password and start task on deleting old history
 
-python manage.py init
+> python manage.py init
 
 3) Start project
 
-python manage.py runserver
+> python manage.py runserver
 
 4) Start redis server
 
-redis-server
+> redis-server
 
 5) Init workers for celery
 
-celery -A msgstore worker --concurrency=4 --beat --scheduler django --loglevel=info -n worker
+> celery -A msgstore worker --concurrency=4 --beat --scheduler django --loglevel=info -n worker
 
 
 6) run front: message-store-vue
 
-> front-end for MessageStore project
-
-## Build Setup of frontend
-
 ```
+Build Setup of frontend
+
 # serve with hot reload at localhost:8080 from directory .../msgstore-vue
 npm run dev
 
@@ -45,10 +43,20 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
-```
+
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
+```
 
 ## Documentation on API methods:
- localhost:8000/docs
+> localhost:8000/docs
+
+## Tests
+To run tests in root directory:
+> ./manage.py test
+
+To get tests coverage info:
+Run:
+> coverage html
+
+Then open file htmlcov/index.html in browser

@@ -5,7 +5,7 @@ from django_celery_beat.models import PeriodicTask, IntervalSchedule
 import os
 import logging
 import json
-from msgstore.settings import TASK_PERIOD, DELTA
+from msgstore_config.settings import TASK_PERIOD, DELTA
 
 
 class Command(BaseCommand):
@@ -35,7 +35,7 @@ class Command(BaseCommand):
         # DELTA = os.getenv('DELTA', 30)
 
         schedule, created = IntervalSchedule.objects.get_or_create(
-            every=TASK_PERIOD,
+            every=DELTA,
             period=IntervalSchedule.SECONDS,
         )
 
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             interval=schedule,
             name='History cleaner',  # simply describes this periodic task.
             task='msgapp.tasks.clear_old_history',  # name of task.
-            args=json.dumps([DELTA]),
+            args=json.dumps([TASK_PERIOD]),
         )
 
     def handle(self, *args, **options):
